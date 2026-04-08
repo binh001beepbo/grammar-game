@@ -83,7 +83,7 @@
         <div class="side-label left-label">⬅ PAST SIMPLE</div>
         <div class="side-label right-label">PRESENT PERFECT ➡</div>
 
-        <div id="card">Đang tải câu hỏi...</div>
+        <div id="card">Loading...</div>
 
         <div class="hint">Kéo trái nếu là Quá khứ, kéo phải nếu là Hiện tại hoàn thành</div>
     </div>
@@ -113,7 +113,7 @@
         // Khởi tạo thẻ đầu tiên
         function loadCard() {
             if (currentIdx >= questions.length) {
-                card.innerHTML = "🎉 Hoàn thành!<br>Điểm của bạn: " + score;
+                card.innerHTML = "🎉 Well done!<br>Điểm của bạn: " + score;
                 card.style.cursor = "default";
                 return;
             }
