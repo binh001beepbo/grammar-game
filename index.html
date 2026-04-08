@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grammar Swipe Game</title>
+    <style>
+        :root { --past: #ff4757; --present: #2ed573; }
+        body {
+            margin: 0; font-family: sans-serif; background: #2f3542;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; overflow: hidden; color: white; touch-action: none;
+        }
+        #score-board { font-size: 24px; margin-bottom: 20px; font-weight: bold; }
+        .game-area { position: relative; width: 320px; height: 400px; }
+        .guide { position: absolute; width: 100%; display: flex; justify-content: space-between; top: -30px; font-size: 12px; opacity: 0.6; }
+        
+        #card {
+            width: 100%; height: 100%; background: white; border-radius: 20px;
+            color: #2f3542; display: flex; align-items: center; justify-content: center;
+            padding: 20px; text-align: center; font-size: 1.2rem; box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: absolute; cursor: grab;
+            transition: transform 0.1s, background 0.3s;
+        }
+        .feedback { position: fixed; top: 20%; font-size: 40px; font-weight: bold; pointer-events: none; opacity: 0; transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+    <div id="score-board">Điểm: 0</div>
+    
+    <div class="game-area">
+        <div class="guide"><span>⬅ QUÁ KHỨ ĐƠN</span><span>HIỆN TẠI HT ➡</span></div>
+        <div id="card">Đang tải câu hỏi...</div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+
+    <script>
+        const data = [
+            { s: "I visited London in 2010.", t: "left" },
+            { s: "She has lived here for ages.", t: "right" },
+            { s: "We saw that movie yesterday.", t: "left" },
+            { s: "They haven't finished yet.", t: "right" },
+            { s: "Did you eat lunch 2 hours ago?", t: "left" },
+            { s: "I've just lost my keys!", t: "right" },
+            { s: "Shakespeare wrote Hamlet.", t: "left" },
+            { s: "Has she ever been to Japan?", t: "right" }
+        ];
+
+        let idx = 0, score = 0, startX = 0, currentX = 0;
+        const card = document.getElementById('card');
+        const board = document.getElementById('score-board');
+        const feedback = document.getElementById('feedback');
+
+        function showQuest() {
+            if (idx >= data.length) {
+                card.innerHTML = `🏁 XONG!<br>Điểm: ${score}/${data.length}`;
+                card.style.transform = "none";
+                return;
+            }
+            card.textContent = data[idx].s;
+            card.style.transform = "translateX(0) rotate(0)";
+            card.style.background = "white";
+        }
+
+        const move = (e) => {
+            if (startX === 0) return;
+            currentX = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+            card.style.transform = `translateX(${currentX}px) rotate(${currentX/10}deg)`;
+            card.style.background = currentX > 50 ? "#d1fadf" : (currentX < -50 ? "#ffdada" : "white");
+        };
+
+        const end = () => {
+            if (startX === 0) return;
+            const threshold = 100;
+            if (Math.abs(currentX) > threshold) {
+                const choice = currentX > 0 ? "right" : "left";
+                const correct = choice === data[idx].t;
+                
+                // Hiệu ứng đúng/sai
+                feedback.textContent = correct ? "✔️ ĐÚNG" : "❌ SAI";
+                feedback.style.color = correct ? "#2ed573" : "#ff4757";
+                feedback.style.opacity = "1";
+                if (correct) score++;
+                
+                idx++;
+                setTimeout(() => { feedback.style.opacity = "0"; showQuest(); }, 500);
+            } else {
+                card.style.transform = "translateX(0) rotate(0)";
+                card.style.background = "white";
+            }
+            startX = 0;
+            board.textContent = `Điểm: ${score}`;
+        };
+
+        card.onmousedown = card.ontouchstart = (e) => {
+            startX = e.touches ? e.touches[0].clientX : e.clientX;
+            card.style.transition = "none";
+        };
+
+        window.onmousemove = window.ontouchmove = move;
+        window.onmouseup = window.ontouchend = end;
+
+        showQuest();
+    </script>
+</body>
+</html>
