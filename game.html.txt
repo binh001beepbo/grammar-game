@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gramma-Swipe: Past vs Present Perfect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 350px;
+            height: 500px;
+        }
+
+        .side-label {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #bdc3c7;
+            font-size: 1.2rem;
+            z-index: 0;
+        }
+
+        .left-label { left: -100px; color: #e74c3c; }
+        .right-label { right: -120px; color: #2ecc71; }
+
+        #card {
+            width: 100%;
+            height: 300px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+            cursor: grab;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.1s ease, background-color 0.3s ease;
+            user-select: none;
+            z-index: 10;
+        }
+
+        #score {
+            position: absolute;
+            top: -80px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="score">Điểm: 0</div>
+        
+        <div class="side-label left-label">⬅ PAST SIMPLE</div>
+        <div class="side-label right-label">PRESENT PERFECT ➡</div>
+
+        <div id="card">Đang tải câu hỏi...</div>
+
+        <div class="hint">Kéo trái nếu là Quá khứ, kéo phải nếu là Hiện tại hoàn thành</div>
+    </div>
+
+    <script>
+        const questions = [
+            { text: "I have lived here for ten years.", type: "present" },
+            { text: "She visited Paris in 2019.", type: "past" },
+            { text: "We haven't finished the report yet.", type: "present" },
+            { text: "They went to the cinema last night.", type: "past" },
+            { text: "Have you ever seen a ghost?", type: "present" },
+            { text: "My grandfather was a doctor.", type: "past" },
+            { text: "I just ate a huge sandwich.", type: "past" },
+            { text: "Science has come a long way.", type: "present" }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        const card = document.getElementById('card');
+        const scoreEl = document.getElementById('score');
+
+        // Khởi tạo thẻ đầu tiên
+        function loadCard() {
+            if (currentIdx >= questions.length) {
+                card.innerHTML = "🎉 Hoàn thành!<br>Điểm của bạn: " + score;
+                card.style.cursor = "default";
+                return;
+            }
+            card.textContent = questions[currentIdx].text;
+            card.style.transform = "translate(0, -50%)";
+            card.style.backgroundColor = "white";
+        }
+
+        let isDragging = false;
+        let startX = 0;
+
+        card.addEventListener('mousedown', startDrag);
+        card.addEventListener('touchstart', startDrag);
+
+        function startDrag(e) {
+            if (currentIdx >= questions.length) return;
+            isDragging = true;
+            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            card.style.transition = "none";
+        }
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+
+        function drag(e) {
+            if (!isDragging) return;
+            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const moveX = x - startX;
+            card.style.transform = `translate(${moveX}px, -50%) rotate(${moveX * 0.1}deg)`;
+            
+            if (moveX < -50) card.style.backgroundColor = "#fadbd8";
+            else if (moveX > 50) card.style.backgroundColor = "#d4efdf";
+            else card.style.backgroundColor = "white";
+        }
+
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const moveX = parseInt(card.style.transform.match(/translate\((.*?)px/)[1]);
+            
+            if (moveX < -150) { // Chọn Past Simple
+                checkAnswer("past");
+            } else if (moveX > 150) { // Chọn Present Perfect
+                checkAnswer("present");
+            } else {
+                card.style.transition = "transform 0.3s ease";
+                card.style.transform = "translate(0, -50%)";
+            }
+        }
+
+        function checkAnswer(choice) {
+            const correct = questions[currentIdx].type === choice;
+            if (correct) score++;
+            
+            scoreEl.textContent = `Điểm: ${score}`;
+            currentIdx++;
+            
+            card.style.transition = "transform 0.5s ease";
+            card.style.transform = choice === "past" ? "translate(-600px, -50%)" : "translate(600px, -50%)";
+            
+            setTimeout(loadCard, 500);
+        }
+
+        loadCard();
+    </script>
+</body>
+</html>
