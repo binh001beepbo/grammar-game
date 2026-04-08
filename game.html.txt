@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -33,15 +33,15 @@
 </head>
 <body>
 
-    <div id="score">Điểm: 0</div>
+    <div id="score">Score: 0</div>
     
     <div id="game-container">
         <div class="side-label left-label">⬅ PAST SIMPLE</div>
         <div class="side-label right-label">PRESENT PERFECT ➡</div>
-        <div id="card">LOADING...</div>
+        <div id="card">Loading...</div>
     </div>
 
-    <div class="hint">Swipe left: Past Simple | Swipe right: Present Perfect</div>
+    <div class="hint">Swipe Left: Past Simple | Swipe Right: Present Perfect</div>
 
     <script>
         const questions = [
@@ -72,4 +72,72 @@
         const card = document.getElementById('card');
         const scoreEl = document.getElementById('score');
 
-        function loadCard()
+        function loadCard() {
+            if (currentIdx >= questions.length) {
+                card.innerHTML = "🎉 GAME OVER!<br>Your Score: " + score + "/" + questions.length;
+                card.style.transform = "translateY(-50%)";
+                card.style.cursor = "default";
+                return;
+            }
+            card.textContent = questions[currentIdx].s;
+            card.style.transform = "translate(0, -50%)";
+            card.style.backgroundColor = "white";
+        }
+
+        let isDragging = false;
+        let startX = 0;
+        let moveX = 0;
+
+        const startDrag = (e) => {
+            if (currentIdx >= questions.length) return;
+            isDragging = true;
+            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            card.style.transition = "none";
+        };
+
+        const drag = (e) => {
+            if (!isDragging) return;
+            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            moveX = x - startX;
+            card.style.transform = `translate(${moveX}px, -50%) rotate(${moveX * 0.05}deg)`;
+            
+            if (moveX < -50) card.style.backgroundColor = "#fadbd8";
+            else if (moveX > 50) card.style.backgroundColor = "#d4efdf";
+            else card.style.backgroundColor = "white";
+        };
+
+        const endDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            card.style.transition = "transform 0.4s ease, background-color 0.3s ease";
+
+            if (moveX < -120) checkAnswer("past");
+            else if (moveX > 120) checkAnswer("present");
+            else {
+                card.style.transform = "translate(0, -50%)";
+                card.style.backgroundColor = "white";
+            }
+            moveX = 0;
+        };
+
+        function checkAnswer(choice) {
+            const correct = questions[currentIdx].t === choice;
+            if (correct) score++;
+            scoreEl.textContent = `Score: ${score}`;
+            
+            card.style.transform = choice === "past" ? "translate(-600px, -50%)" : "translate(600px, -50%)";
+            currentIdx++;
+            setTimeout(loadCard, 400);
+        }
+
+        card.addEventListener('mousedown', startDrag);
+        card.addEventListener('touchstart', startDrag);
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        loadCard();
+    </script>
+</body>
+</html>
