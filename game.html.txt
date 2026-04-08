@@ -2,107 +2,69 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gramma-Swipe: Past vs Present Perfect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grammar Swipe: Past vs Present Perfect</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            background-color: #2c3e50;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden; color: white; touch-action: none;
         }
-
-        #game-container {
-            position: relative;
-            width: 350px;
-            height: 500px;
-        }
-
+        #game-container { position: relative; width: 320px; height: 400px; }
         .side-label {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            color: #bdc3c7;
-            font-size: 1.2rem;
-            z-index: 0;
+            position: absolute; top: 50%; transform: translateY(-50%);
+            font-weight: bold; color: rgba(255,255,255,0.2); font-size: 0.9rem; z-index: 0;
         }
-
-        .left-label { left: -100px; color: #e74c3c; }
-        .right-label { right: -120px; color: #2ecc71; }
-
+        .left-label { left: -80px; color: #e74c3c; }
+        .right-label { right: -80px; color: #2ecc71; }
         #card {
-            width: 100%;
-            height: 300px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.4rem;
-            cursor: grab;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            width: 100%; height: 280px; background: white; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center;
+            justify-content: center; padding: 25px; text-align: center;
+            font-size: 1.3rem; color: #333; cursor: grab; position: absolute;
+            top: 50%; left: 0; transform: translateY(-50%);
             transition: transform 0.1s ease, background-color 0.3s ease;
-            user-select: none;
-            z-index: 10;
+            user-select: none; z-index: 10; box-sizing: border-box;
         }
-
-        #score {
-            position: absolute;
-            top: -80px;
-            width: 100%;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .hint {
-            position: absolute;
-            bottom: -50px;
-            width: 100%;
-            text-align: center;
-            color: #7f8c8d;
-        }
+        #score { margin-bottom: 20px; font-size: 1.8rem; font-weight: bold; }
+        .hint { margin-top: 30px; font-size: 0.8rem; color: #bdc3c7; text-align: center; }
     </style>
 </head>
 <body>
 
+    <div id="score">Điểm: 0</div>
+    
     <div id="game-container">
-        <div id="score">Điểm: 0</div>
-        
         <div class="side-label left-label">⬅ PAST SIMPLE</div>
         <div class="side-label right-label">PRESENT PERFECT ➡</div>
-
-        <div id="card">Loading...</div>
-
-        <div class="hint">Kéo trái nếu là Quá khứ, kéo phải nếu là Hiện tại hoàn thành</div>
+        <div id="card">LOADING...</div>
     </div>
+
+    <div class="hint">Swipe left: Past Simple | Swipe right: Present Perfect</div>
 
     <script>
         const questions = [
-            { text: "I have lived here for ten years.", type: "present" },
-            { text: "She visited Paris in 2019.", type: "past" },
-            { text: "We haven't finished the report yet.", type: "present" },
-            { text: "They went to the cinema last night.", type: "past" },
-            { text: "Have you seen a ghost yet?", type: "present" },
-            { text: "My grandfather was a doctor.", type: "past" },
-            { text: "I just ate a huge sandwich.", type: "past" },
-            { text: "Science has come a long way.", type: "present" },
-            { text: "He has started a new job.", type: "present" },
-            { text: "We have already seen this movie.", type: "present" },
-            { text: "She lost her keys yesterday morning.", type: "past" },
-            { text: "We lived in Tokyo when I was a child.", type: "past" },
-            { text: "Have they eaten their dinner yet?", type: "present" },
+            { s: "I finished my homework an hour ago.", t: "past" },
+            { s: "Have you ever eaten lobster?", t: "present" },
+            { s: "She lost her keys yesterday morning.", t: "past" },
+            { s: "We have already seen this movie.", t: "present" },
+            { s: "They went to Da Lat last summer.", t: "past" },
+            { s: "I have just broken my glasses.", t: "present" },
+            { s: "Did you see him at the party?", t: "past" },
+            { s: "My sister has never traveled abroad.", t: "present" },
+            { s: "The rain stopped a few minutes ago.", t: "past" },
+            { s: "Someone has stolen my bicycle!", t: "present" },
+            { s: "I bought this shirt on sale.", t: "past" },
+            { s: "The train has already left the station.", t: "present" },
+            { s: "We lived in Tokyo when I was a child.", t: "past" },
+            { s: "He has recently started a new job.", t: "present" },
+            { s: "I didn't call you last night.", t: "past" },
+            { s: "Have they finished their dinner yet?", t: "present" },
+            { s: "The Titanic sank in 1912.", t: "past" },
+            { s: "I have misplaced my passport.", t: "present" },
+            { s: "Shakespeare wrote many famous plays.", t: "past" },
+            { s: "Up to now, we haven't had any problems.", t: "present" }
         ];
 
         let currentIdx = 0;
@@ -110,77 +72,4 @@
         const card = document.getElementById('card');
         const scoreEl = document.getElementById('score');
 
-        // Khởi tạo thẻ đầu tiên
-        function loadCard() {
-            if (currentIdx >= questions.length) {
-                card.innerHTML = "🎉 Well done!<br>Điểm của bạn: " + score;
-                card.style.cursor = "default";
-                return;
-            }
-            card.textContent = questions[currentIdx].text;
-            card.style.transform = "translate(0, -50%)";
-            card.style.backgroundColor = "white";
-        }
-
-        let isDragging = false;
-        let startX = 0;
-
-        card.addEventListener('mousedown', startDrag);
-        card.addEventListener('touchstart', startDrag);
-
-        function startDrag(e) {
-            if (currentIdx >= questions.length) return;
-            isDragging = true;
-            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-            card.style.transition = "none";
-        }
-
-        window.addEventListener('mousemove', drag);
-        window.addEventListener('touchmove', drag);
-
-        function drag(e) {
-            if (!isDragging) return;
-            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-            const moveX = x - startX;
-            card.style.transform = `translate(${moveX}px, -50%) rotate(${moveX * 0.1}deg)`;
-            
-            if (moveX < -50) card.style.backgroundColor = "#fadbd8";
-            else if (moveX > 50) card.style.backgroundColor = "#d4efdf";
-            else card.style.backgroundColor = "white";
-        }
-
-        window.addEventListener('mouseup', endDrag);
-        window.addEventListener('touchend', endDrag);
-
-        function endDrag(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            const moveX = parseInt(card.style.transform.match(/translate\((.*?)px/)[1]);
-            
-            if (moveX < -150) { // Chọn Past Simple
-                checkAnswer("past");
-            } else if (moveX > 150) { // Chọn Present Perfect
-                checkAnswer("present");
-            } else {
-                card.style.transition = "transform 0.3s ease";
-                card.style.transform = "translate(0, -50%)";
-            }
-        }
-
-        function checkAnswer(choice) {
-            const correct = questions[currentIdx].type === choice;
-            if (correct) score++;
-            
-            scoreEl.textContent = `Điểm: ${score}`;
-            currentIdx++;
-            
-            card.style.transition = "transform 0.5s ease";
-            card.style.transform = choice === "past" ? "translate(-600px, -50%)" : "translate(600px, -50%)";
-            
-            setTimeout(loadCard, 500);
-        }
-
-        loadCard();
-    </script>
-</body>
-</html>
+        function loadCard()
