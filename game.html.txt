@@ -94,10 +94,15 @@
             { text: "She visited Paris in 2019.", type: "past" },
             { text: "We haven't finished the report yet.", type: "present" },
             { text: "They went to the cinema last night.", type: "past" },
-            { text: "Have you ever seen a ghost?", type: "present" },
+            { text: "Have you seen a ghost yet?", type: "present" },
             { text: "My grandfather was a doctor.", type: "past" },
             { text: "I just ate a huge sandwich.", type: "past" },
-            { text: "Science has come a long way.", type: "present" }
+            { text: "Science has come a long way.", type: "present" },
+            { text: "He has started a new job.", type: "present" },
+            { text: "We have already seen this movie.", type: "present" },
+            { text: "She lost her keys yesterday morning.", type: "past" },
+            { text: "We lived in Tokyo when I was a child.", type: "past" },
+            { text: "Have they eaten their dinner yet?", type: "present" },
         ];
 
         let currentIdx = 0;
